@@ -1,4 +1,4 @@
-FROM hysds/pge-base:latest
+FROM hysds/pge-base:develop-es1
 
 MAINTAINER mkarim "Mohammed.R.Karim@jpl.nasa.gov"
 LABEL description="multi acquisition-localizer"
