@@ -29,6 +29,7 @@ USER ops
 RUN set -ex \
  && source /home/ops/verdi/bin/activate \
  && pip install elasticsearch \
+ && pip install traceback \
  && mkdir -p /data/work \
  && chmod -R 755 /data \
  && chown -R ops:ops /data \
