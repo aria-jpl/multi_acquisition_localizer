@@ -29,6 +29,6 @@
     {
       "name":"destination_type",
       "destination":"context"
-    } 
+    }
   ]
 }

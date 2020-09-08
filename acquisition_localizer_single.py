@@ -291,11 +291,12 @@ def resolve_source_from_ctx(ctx):
     aoi = ctx.get('aoi', 'no_aoi')
     spyddder_extract_version = ctx['spyddder_extract_version']
     archive_filename = ctx['archive_filename']
+    destination_type = ctx.get("destination_type", "s3")
 
-    return resolve_source(dataset_type, identifier, dataset, download_url, asf_ngap_download_queue, esa_download_queue, spyddder_extract_version,archive_filename, job_priority, aoi)
+    return resolve_source(dataset_type, identifier, dataset, download_url, asf_ngap_download_queue, esa_download_queue, spyddder_extract_version,archive_filename, job_priority, aoi, destination_type)
 
 
-def resolve_source(dataset_type, identifier, dataset, download_url, asf_ngap_download_queue, esa_download_queue, spyddder_extract_version, archive_filename, job_priority, aoi):
+def resolve_source(dataset_type, identifier, dataset, download_url, asf_ngap_download_queue, esa_download_queue, spyddder_extract_version, archive_filename, job_priority, aoi, destination_type="s3"):
    
     # get settings
     '''
@@ -324,7 +325,7 @@ def resolve_source(dataset_type, identifier, dataset, download_url, asf_ngap_dow
     try:
         #return extract_job(spyddder_extract_version, queue, url, archive_filename, identifier, time.strftime('%Y-%m-%d' ), job_priority, aoi)
         return sling_extract_job(spyddder_extract_version, identifier, url_type, download_url, queue, archive_filename,  
-                time.strftime('%Y-%m-%d' ), job_priority, aoi)
+                time.strftime('%Y-%m-%d' ), job_priority, aoi, destination_type)
     except Exception as err:
         err_msg = "ERROR running sling_extract_job : %s" %str(err)
         logger.info(err_msg)
@@ -340,13 +341,17 @@ def resolve_source_from_ctx_file(ctx_file):
         return resolve_source_from_ctx(json.load(f))
 
 def sling_extract_job(sling_extract_version, slc_id, url_type, download_url, queue, archive_file,
-                prod_date, priority, aoi, wuid=None, job_num=None):
+                prod_date, priority, aoi, destination_type = "s3", wuid=None, job_num=None):
     """Map function for spyddder-man extract job."""
 
     # set job type and disk space reqs
     #job_type = "job-spyddder-extract:{}".format(spyddder_extract_version)
     logger.info("\nsling_extract_job for :%s" %slc_id)
     job_type = "job-spyddder-sling-extract-{}:{}".format(url_type, sling_extract_version)
+ 
+    if destination_type.lower()=="file":
+        sling_extract_version="ARIA-446"
+        job_type = "job-spyddder-sling-extract-{}-file:{}".format(url_type, sling_extract_version)
 
     # resolve hysds job
     params = {

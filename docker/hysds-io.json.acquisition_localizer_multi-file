@@ -1,5 +1,5 @@
 {
-  "label" : "Acquisition Localizer - Multi",
+  "label" : "Acquisition Localizer  File  - Multi",
   "recommended-queues" : [ "system-jobs-queue" ],
   "allowed_accounts": [ "ops" ],
   "enable_dedup": false,
@@ -36,7 +36,7 @@
       "name": "destination_type",
       "from": "value",
       "type": "text",
-      "value": "s3"
+      "value": "file"
     }
   ]
 }
