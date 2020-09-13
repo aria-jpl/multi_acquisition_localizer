@@ -350,7 +350,7 @@ def sling_extract_job(sling_extract_version, slc_id, url_type, download_url, que
     job_type = "job-spyddder-sling-extract-{}:{}".format(url_type, sling_extract_version)
  
     if destination_type.lower()=="file" or destination_type.lower()=="local":
-        job_type = "job-spyddder-sling-extract-file-{}:{}".format(url_type, sling_extract_version)
+        job_type = "job-spyddder-sling-extract-local-{}:{}".format(url_type, sling_extract_version)
 
     # resolve hysds job
     params = {
