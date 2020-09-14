@@ -319,7 +319,7 @@ def get_acq_data(id):
     return result['hits']['total'], result['hits']['hits'][0]
 
 
-def get_acq_data_from_list(acq_list):
+def get_acq_data_from_list(acq_list, destination_type="s3"):
     logger.info("get_acq_data_from_list")
     acq_info = {}
     # Find out status of all Master ACQs, create a ACQ object with that and update acq_info dictionary 
@@ -334,7 +334,11 @@ def get_acq_data_from_list(acq_list):
                 logger.info("Failed to get information about Acqusition(possibly missing??) : %s" %acq)
                 raise RuntimeError("Failed to get information about Acqusition(possibly missing??) : %s" %acq)
         
-        acq_data = acq_data_value['fields']['partial'][0] 
+        acq_data = acq_data_value['fields']['partial'][0]
+        if destination_type=="local" or destination_type=="file":
+            slc_id = acq_data['metadata']['identifier'] 
+            if not slc_id.lower().endswith("-local"):
+                acq_data['metadata']['identifier'] = "{}{}".format(slc_id, "-local")
         status = check_slc_status(acq_data['metadata']['identifier']) 
         if status: 
             # status=1 
@@ -419,7 +423,7 @@ def sling(acq_list, spyddder_extract_version, acquisition_localizer_version, esa
     '''
     global sling_completion_max_sec
 
-    acq_info = get_acq_data_from_list(acq_list)
+    acq_info = get_acq_data_from_list(acq_list, destination_type)
 
     #logger.info("acq_info type: %s : %s" %(type(acq_info), len(acq_info) ))
     #logger.info(acq_info)
