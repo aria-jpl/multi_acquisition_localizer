@@ -601,7 +601,7 @@ def check_failed_jobs(acq_info):
 
 def submit_sling_job(spyddder_extract_version, acquisition_localizer_version, esa_download_queue, asf_ngap_download_queue, acq_data, priority, destination_type="s3"):
     identifier = acq_data["metadata"]["identifier"]
-    logger.info("MAL : submit_sling_job for slc_id : {} destination_type : {}".format(identifier, destination_typ))
+    logger.info("MAL : submit_sling_job for slc_id : {} destination_type : {}".format(identifier, destination_type))
     dataset_type = acq_data["dataset_type"]
     dataset = acq_data["dataset"]
     download_url = acq_data["metadata"]["download_url"]
