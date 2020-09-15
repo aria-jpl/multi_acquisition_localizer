@@ -449,7 +449,7 @@ def sling(acq_list, spyddder_extract_version, acquisition_localizer_version, esa
 
 
 
-
+    '''
     sling_completion_max_sec_count = 2000 * no_of_localize_job
 
     if sling_completion_max_sec_count > sling_completion_max_sec:
@@ -537,7 +537,7 @@ def sling(acq_list, spyddder_extract_version, acquisition_localizer_version, esa
     
     
 
-    '''
+    
     logger.info("\n\nLocalized Acquisitions:")
     if localized_data:
         for acq in localized_data.keys():
@@ -601,6 +601,7 @@ def check_failed_jobs(acq_info):
 
 def submit_sling_job(spyddder_extract_version, acquisition_localizer_version, esa_download_queue, asf_ngap_download_queue, acq_data, priority, destination_type="s3"):
     identifier = acq_data["metadata"]["identifier"]
+    logger.info("MAL : submit_sling_job for slc_id : {} destination_type : {}".format(identifier, destination_typ))
     dataset_type = acq_data["dataset_type"]
     dataset = acq_data["dataset"]
     download_url = acq_data["metadata"]["download_url"]
