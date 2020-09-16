@@ -239,10 +239,16 @@ def query_aoi_acquisitions(starttime, endtime, platform):
     return acq_info
     
 
+def remove_local(s, suffix):
+    if suffix and s.endswith(suffix):
+        return s[:-len(suffix)]
+    return s
+
 def resolve_s1_slc(identifier, download_url, asf_queue, esa_queue):
     """Resolve S1 SLC using ASF datapool (ASF or NGAP). Fallback to ESA."""
     url_type = "asf"
 
+    identifier = remove_local(identifier, "-local")
     #asf_queue = "spyddder-sling-extract-asf"
     #esa_queue = "spyddder-sling-extract-scihub"
 
