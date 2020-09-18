@@ -399,6 +399,7 @@ def resolve_source(ctx_file):
     asf_ngap_download_queue = ctx['asf_ngap_download_queue']
     esa_download_queue = ctx['esa_download_queue']
     destination_type = ctx.get("destination_type", "s3")
+    request_id = ctx.get("request_id", None)
 
     job_priority = ctx["job_priority"]
     job_type, job_version = ctx['job_specification']['id'].split(':') 
@@ -413,11 +414,11 @@ def resolve_source(ctx_file):
     index_suffix = "S1-IW_ACQ"
 
 
-    return sling(acq_list, spyddder_sling_extract_version, acquisition_localizer_version, esa_download_queue, asf_ngap_download_queue, job_priority, job_type, job_version, destination_type)
+    return sling(acq_list, spyddder_sling_extract_version, acquisition_localizer_version, esa_download_queue, asf_ngap_download_queue, job_priority, job_type, job_version, destination_type, request_id)
 
 
 
-def sling(acq_list, spyddder_extract_version, acquisition_localizer_version, esa_download_queue, asf_ngap_download_queue, job_priority, job_type, job_version, destination_type="s3"):
+def sling(acq_list, spyddder_extract_version, acquisition_localizer_version, esa_download_queue, asf_ngap_download_queue, job_priority, job_type, job_version, destination_type="s3", request_id=None):
     '''
 	This function checks if any ACQ that has not been ingested yet and sling them.
     '''
@@ -435,7 +436,7 @@ def sling(acq_list, spyddder_extract_version, acquisition_localizer_version, esa
         #acq_info[acq_id]['localized'] = False
         if not acq_info[acq_id]['localized']:
             acq_data = acq_info[acq_id]['acq_data']
-            job_id = submit_sling_job(spyddder_extract_version, acquisition_localizer_version, esa_download_queue, asf_ngap_download_queue, acq_data, job_priority, destination_type)
+            job_id = submit_sling_job(spyddder_extract_version, acquisition_localizer_version, esa_download_queue, asf_ngap_download_queue, acq_data, job_priority, destination_type, request_id)
             no_of_localize_job = no_of_localize_job + 1
             acq_info[acq_id]['job_id'] = job_id
             job_status, new_job_id  = get_job_status(job_id)
@@ -599,7 +600,7 @@ def check_failed_jobs(acq_info):
 
 
 
-def submit_sling_job(spyddder_extract_version, acquisition_localizer_version, esa_download_queue, asf_ngap_download_queue, acq_data, priority, destination_type="s3"):
+def submit_sling_job(spyddder_extract_version, acquisition_localizer_version, esa_download_queue, asf_ngap_download_queue, acq_data, priority, destination_type="s3", request_id=None):
     identifier = acq_data["metadata"]["identifier"]
     logger.info("MAL : submit_sling_job for slc_id : {} destination_type : {}".format(identifier, destination_type))
     dataset_type = acq_data["dataset_type"]
@@ -608,7 +609,7 @@ def submit_sling_job(spyddder_extract_version, acquisition_localizer_version, es
     archive_filename = acq_data["metadata"]["archive_filename"]
     aoi = "no_aoi"
 
-    return acquisition_localizer_single.resolve_source(dataset_type, identifier, dataset, download_url, asf_ngap_download_queue, esa_download_queue, spyddder_extract_version,archive_filename, priority, aoi, destination_type)
+    return acquisition_localizer_single.resolve_source(dataset_type, identifier, dataset, download_url, asf_ngap_download_queue, esa_download_queue, spyddder_extract_version,archive_filename, priority, aoi, destination_type, request_id)
 
 
 def submit_sling_job2(spyddder_extract_version, acquisition_localizer_version, esa_download_queue, asf_ngap_download_queue, acq_data, priority):
