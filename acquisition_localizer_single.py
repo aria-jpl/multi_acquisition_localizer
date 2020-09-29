@@ -244,13 +244,17 @@ def remove_local(s, suffix):
         return s[:-len(suffix)]
     return s
 
-def resolve_s1_slc(identifier, download_url, asf_queue, esa_queue):
+def resolve_s1_slc(identifier, download_url, asf_queue, esa_queue, destination_type="s3"):
     """Resolve S1 SLC using ASF datapool (ASF or NGAP). Fallback to ESA."""
     url_type = "asf"
 
     identifier = remove_local(identifier, "-local")
     #asf_queue = "spyddder-sling-extract-asf"
     #esa_queue = "spyddder-sling-extract-scihub"
+
+    if destination_type.lower()=="file" or destination_type.lower()=="local":
+        asf_queue = "spyddder-sling-extract-local-asf"
+        esa_queue = "spyddder-sling-extract-local-scihub"
 
     # determine best url and corresponding queue by getting first 100 bytes
     vertex_url = "https://datapool.asf.alaska.edu/SLC/SA/{}.zip".format(identifier)
@@ -325,7 +329,7 @@ def resolve_source(dataset_type, identifier, dataset, download_url, asf_ngap_dow
         if dataset_exists(identifier, settings['ACQ_TO_DSET_MAP'][dataset]):
             raise DatasetExists("Dataset {} already exists.".format(identifier))
         '''
-        url, queue, url_type = resolve_s1_slc(identifier, download_url, asf_ngap_download_queue, esa_download_queue)
+        url, queue, url_type = resolve_s1_slc(identifier, download_url, asf_ngap_download_queue, esa_download_queue, destination_type)
     else:
         raise RuntimeError("Unknown acquisition dataset: {}".format(dataset))
 
@@ -363,6 +367,7 @@ def sling_extract_job(sling_extract_version, slc_id, url_type, download_url, que
     }
 
     if destination_type.lower()=="file" or destination_type.lower()=="local":
+        sling_extract_version = "ARIA-446_singularity"
         job_type = "job-spyddder-sling-extract-local-{}:{}".format(url_type, sling_extract_version)
         params = {
             "slc_id": slc_id,
