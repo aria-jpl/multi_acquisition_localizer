@@ -335,8 +335,7 @@ def resolve_source(dataset_type, identifier, dataset, download_url, asf_ngap_dow
 
     try:
         #return extract_job(spyddder_extract_version, queue, url, archive_filename, identifier, time.strftime('%Y-%m-%d' ), job_priority, aoi)
-        return sling_extract_job(spyddder_extract_version, identifier, url_type, download_url, queue, archive_filename,  
-                time.strftime('%Y-%m-%d' ), job_priority, aoi, destination_type, request_id)
+
     except Exception as err:
         err_msg = "ERROR running sling_extract_job : %s" %str(err)
         logger.info(err_msg)
@@ -367,7 +366,8 @@ def sling_extract_job(sling_extract_version, slc_id, url_type, download_url, que
     }
 
     if destination_type.lower()=="file" or destination_type.lower()=="local":
-        sling_extract_version = "ARIA-446_singularity"
+        if not sling_extract_version.startswith("ARIA-446_singularity"):
+            sling_extract_version = "ARIA-446_singularity"
         job_type = "job-spyddder-sling-extract-local-{}:{}".format(url_type, sling_extract_version)
         params = {
             "slc_id": slc_id,
