@@ -369,7 +369,7 @@ def sling_extract_job(sling_extract_version, slc_id, url_type, download_url, que
     if destination_type.lower()=="file" or destination_type.lower()=="local":
         if not sling_extract_version.startswith("ARIA-446_singularity"):
             sling_extract_version = "ARIA-446_singularity"
-        job_type = "spyddder-sling-extract-local-{}-singularity:{}".format(url_type, sling_extract_version)
+        job_type = "job-spyddder-sling-extract-local-{}-singularity:{}".format(url_type, sling_extract_version)
         params = {
             "slc_id": slc_id,
             "request_id" : request_id
